@@ -1,19 +1,50 @@
-var circleArray = [];
-function Circle(x,y,r,dx,dy){
-    this.x = x;
-    this.y = y;
-    this.r = r;
-    this.color = colors[Math.floor(Math.random()*colors.length)];
-    this.draw = function(){
-        pen.beginPath();
-        pen.arc(this.x,this.y,this.r,0,Math.PI*2);
-        pen.fillStyle = this.color;
-        pen.fill();
+let color = document.getElementById('color');
+let createBtn = document.getElementById('createBtn');
+let list = document.getElementById('list');
+
+createBtn.onclick = () => {
+    let newNote = document.createElement('div');
+    newNote.classList.add('note');
+    newNote.innerHTML = `
+    <span class="close">x</span>
+    <textarea
+    placeholder="Write Content..."
+    rows="10" cols="30"></textarea>`;
+    newNote.style.borderColor = color.value;
+    list.appendChild(newNote)
+}
+document.addEventListener('click', (event) => {
+    if(event.target.classList.contains('close')){
+        event.target.parentNode.remove();
     }
-    this.update = function(){
-        this.x = this.x + dx;
-        this.y = this.y + dy;
-        if(mouse.x - this.x < 100 && mouse.x - this.x > -100 && mouse.y - this.y < 100 && mouse.y - this.y > -100){
-            if(this.r < 30){
-                this.r+=1;
-            }
+})
+
+let cursor = {
+    x: null,
+    y: null
+}
+let note = {
+    dom: null,
+    x: null,
+    y: null
+}
+document.addEventListener('mousedown', (event) => {
+    if(event.target.classList.contains('note')){
+        cursor = {
+            x: event.clientX,
+            y: event.clientY
+        }
+        note = {
+            dom: event.target,
+            x: event.target.getBoundingClientRect().left,
+            y: event.target.getBoundingClientRect().top
+        }
+    }
+})
+
+document.addEventListener('mousemove', (event) => {
+    if(note.dom == null) return;
+    let currentCursor = {
+        x: event.clientX,
+        y: event.clientY
+        
